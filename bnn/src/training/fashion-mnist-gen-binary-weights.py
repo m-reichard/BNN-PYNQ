@@ -35,7 +35,7 @@ import finnthesizer as fth
 
 if __name__ == "__main__":
     bnnRoot = "."
-    npzFile = bnnRoot + "/fashion_mnist_parameters.npz"
+    npzFile = bnnRoot + "fashion-mnist-train/fashion_mnist_parameters.npz"
     targetDirBin = bnnRoot + "/fashion-mnist-lfc"
     
     simdCounts = [64, 32, 64, 8]
