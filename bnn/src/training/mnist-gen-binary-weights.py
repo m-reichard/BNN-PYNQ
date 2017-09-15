@@ -41,7 +41,7 @@ if __name__ == "__main__":
     simdCounts = [64, 32, 64, 8]
     peCounts = [32, 64, 32, 16]
     
-    classes = map(lambda x: str(x), range(9))
+    classes = map(lambda x: str(x), range(10))
     
     fth.convertFCNetwork(npzFile, targetDirBin, simdCounts, peCounts)
     
