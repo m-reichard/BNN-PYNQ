@@ -137,19 +137,18 @@ if __name__ == "__main__":
     valid_set_y = loadFashionMNIST("train")["y"][50000:60000]
     test_set_X = loadFashionMNIST("t10k")["X"]
     test_set_y = loadFashionMNIST("t10k")["y"]
-    
-    # bc01 format    
-    # Inputs in the range [-1,+1]
-    # print("Inputs in the range [-1,+1]")
-    train_set_X = 2* train_set_X.reshape(-1, 1, 28, 28) - 1.
-    valid_set_X = 2* valid_set_X.reshape(-1, 1, 28, 28) - 1.
-    test_set_X = 2* test_set_X.reshape(-1, 1, 28, 28) - 1.
-    
+    # Inputs are originally between [0, 255]
+    # Rescale to put them between [-1, +1] 
+    train_set_X = train_set_X / 255.
+    valid_set_X = valid_set_X / 255.
+    test_set_X = test_set_X / 255.
+    train_set_X = 2*(train_set_X.reshape(-1, 1, 28, 28)) - 1.
+    valid_set_X = 2*(valid_set_X.reshape(-1, 1, 28, 28)) - 1.
+    test_set_X = 2*(test_set_X.reshape(-1, 1, 28, 28)) - 1.
     # Binarise the inputs.
     train_set_X = np.where(train_set_X < 0, -1, 1).astype(theano.config.floatX)
     valid_set_X = np.where(valid_set_X < 0, -1, 1).astype(theano.config.floatX)
     test_set_X = np.where(test_set_X < 0, -1, 1).astype(theano.config.floatX)
-
     # flatten targets
     train_set_y = np.hstack(train_set_y)
     valid_set_y = np.hstack(valid_set_y)
