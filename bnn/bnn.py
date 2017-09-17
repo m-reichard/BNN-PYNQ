@@ -28,7 +28,8 @@
 #   ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from pynq import Overlay, PL
-from PIL import Image
+from PIL import Image, ImageOps
+from array import *
 import numpy as np
 import cffi
 import os
@@ -79,6 +80,30 @@ class PynqBNN:
     def __del__(self):
         self.interface.deinit()
         
+    def image_to_mnist(self, im, fp, invert=False):
+      # resize the image and invert if desired
+      # MNIST is white digits on black background
+      smallimg = im.resize((28, 28))
+      if invert:
+        smallimg = ImageOps.invert(smallimg)
+      # convert to byte array for MNIST storage
+      data_image = array('B')
+      pixel = smallimg.load()
+      for x in range(0,28):
+        for y in range(0,28):
+          data_image.append(pixel[y,x])
+      # Setting up the header of the MNIST format file
+      hexval = "{0:#0{1}x}".format(1,6)
+      header = array('B')
+      header.extend([0,0,8,1,0,0])
+      header.append(int('0x'+hexval[2:][:2],16))
+      header.append(int('0x'+hexval[2:][2:],16))
+      header.extend([0,0,0,28,0,0,0,28])
+      header[3] = 3 # Changing MSB for image data (0x00000803)
+      # write header and data to file
+      data_image = header + data_image
+      data_image.tofile(fp)
+
     def load_parameters(self, params):
         if not os.path.isabs(params):
             params = os.path.join(BNN_PARAM_DIR, params)
